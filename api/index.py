@@ -1,6 +1,7 @@
 # api/index.py
 from fastapi import FastAPI
 from mangum import Mangum
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 handler = Mangum(app)

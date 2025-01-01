@@ -1,4 +1,3 @@
-// vercel.json
 {
     "version": 2,
     "builds": [
@@ -6,14 +5,30 @@
             "src": "main.py",
             "use": "@vercel/python",
             "config": {
-                "runtime": "python3.12"
+                "runtime": "python3.12",
+                "maxLambdaSize": "15mb"
             }
         }
     ],
     "routes": [
         {
-            "src": "/api/(.*)",
+            "src": "/docs",
+            "dest": "main.py"
+        },
+        {
+            "src": "/openapi.json",
+            "dest": "main.py"
+        },
+        {
+            "src": "/substitute",
+            "dest": "main.py"
+        },
+        {
+            "src": "/(.*)",
             "dest": "main.py"
         }
-    ]
+    ],
+    "env": {
+        "PYTHONPATH": "."
+    }
 }

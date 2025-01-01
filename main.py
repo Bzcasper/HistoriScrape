@@ -8,13 +8,18 @@ from cache import get_cache
 from rate_limiter import rate_limit
 import uvicorn
 import logging
+# main.py modification
+from fastapi import FastAPI, HTTPException, Request, Depends
+from mangum import Mangum
 
 app = FastAPI(
     title="SubstituteChef API",
-    description="API for intelligent ingredient substitutions based on recipe context and dietary restrictions.",
-    version="1.0.0",
+    description="API for intelligent ingredient substitutions",
+    version="1.0.0"
 )
 
+# Add Mangum handler for serverless
+handler = Mangum(app)
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
