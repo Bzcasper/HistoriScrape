@@ -6,14 +6,13 @@
             "src": "main.py",
             "use": "@vercel/python",
             "config": {
-                "runtime": "python3.12",
-                "maxLambdaSize": "15mb"
+                "runtime": "python3.12"
             }
         }
     ],
     "routes": [
         {
-            "src": "/(.*)",
+            "src": "/api/(.*)",
             "dest": "main.py"
         }
     ]
