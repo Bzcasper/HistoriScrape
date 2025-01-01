@@ -14,11 +14,8 @@ SUBSTITUTION_DB = {
                 "attributes": {
                     "flavor_profile": "mild coconut flavor",
                     "texture": "solid at room temperature",
-                    "nutritional_info": {
-                        "calories": "120 kcal",
-                        "fat": "14g"
-                    }
-                }
+                    "nutritional_info": {"calories": "120 kcal", "fat": "14g"},
+                },
             },
             {
                 "name": "Olive Oil",
@@ -26,12 +23,9 @@ SUBSTITUTION_DB = {
                 "attributes": {
                     "flavor_profile": "fruity and robust",
                     "texture": "liquid at room temperature",
-                    "nutritional_info": {
-                        "calories": "119 kcal",
-                        "fat": "13.5g"
-                    }
-                }
-            }
+                    "nutritional_info": {"calories": "119 kcal", "fat": "13.5g"},
+                },
+            },
         ],
         "standard": [
             {
@@ -40,11 +34,8 @@ SUBSTITUTION_DB = {
                 "attributes": {
                     "flavor_profile": "buttery",
                     "texture": "solid at room temperature",
-                    "nutritional_info": {
-                        "calories": "100 kcal",
-                        "fat": "11g"
-                    }
-                }
+                    "nutritional_info": {"calories": "100 kcal", "fat": "11g"},
+                },
             },
             {
                 "name": "Applesauce",
@@ -52,13 +43,10 @@ SUBSTITUTION_DB = {
                 "attributes": {
                     "flavor_profile": "mild sweetness",
                     "texture": "moisture-enhancing",
-                    "nutritional_info": {
-                        "calories": "50 kcal",
-                        "fat": "0g"
-                    }
-                }
-            }
-        ]
+                    "nutritional_info": {"calories": "50 kcal", "fat": "0g"},
+                },
+            },
+        ],
     },
     "eggs": {
         "vegan": [
@@ -70,9 +58,9 @@ SUBSTITUTION_DB = {
                     "texture": "gel-like when mixed with water",
                     "nutritional_info": {
                         "calories": "55 kcal per 1 tablespoon",
-                        "fat": "4g"
-                    }
-                }
+                        "fat": "4g",
+                    },
+                },
             },
             {
                 "name": "Chia Seeds",
@@ -82,10 +70,10 @@ SUBSTITUTION_DB = {
                     "texture": "gel-like when mixed with water",
                     "nutritional_info": {
                         "calories": "60 kcal per 1 tablespoon",
-                        "fat": "4g"
-                    }
-                }
-            }
+                        "fat": "4g",
+                    },
+                },
+            },
         ],
         "standard": [
             {
@@ -96,9 +84,9 @@ SUBSTITUTION_DB = {
                     "texture": "moisture-enhancing",
                     "nutritional_info": {
                         "calories": "50 kcal per 1/4 cup",
-                        "fat": "0g"
-                    }
-                }
+                        "fat": "0g",
+                    },
+                },
             },
             {
                 "name": "Silken Tofu",
@@ -108,22 +96,27 @@ SUBSTITUTION_DB = {
                     "texture": "smooth and creamy",
                     "nutritional_info": {
                         "calories": "55 kcal per 1/4 cup",
-                        "fat": "3g"
-                    }
-                }
-            }
-        ]
+                        "fat": "3g",
+                    },
+                },
+            },
+        ],
     },
     # Add more ingredients as needed
 }
 
+
 def get_substitutions(request: SubstituteRequest) -> List[SubstituteOption]:
     original = request.original_ingredient.lower()
     substitutions = []
-    
+
     # Determine dietary context
-    dietary = [diet.lower() for diet in request.dietary_restrictions] if request.dietary_restrictions else []
-    
+    dietary = (
+        [diet.lower() for diet in request.dietary_restrictions]
+        if request.dietary_restrictions
+        else []
+    )
+
     # Fetch substitution options based on dietary restrictions
     if original in SUBSTITUTION_DB:
         if dietary:
@@ -133,7 +126,7 @@ def get_substitutions(request: SubstituteRequest) -> List[SubstituteOption]:
                         substitution = SubstituteOption(
                             name=option["name"],
                             reason=option["reason"],
-                            attributes=SubstituteAttributes(**option["attributes"])
+                            attributes=SubstituteAttributes(**option["attributes"]),
                         )
                         substitutions.append(substitution)
         # Add standard substitutions
@@ -142,18 +135,17 @@ def get_substitutions(request: SubstituteRequest) -> List[SubstituteOption]:
                 substitution = SubstituteOption(
                     name=option["name"],
                     reason=option["reason"],
-                    attributes=SubstituteAttributes(**option["attributes"])
+                    attributes=SubstituteAttributes(**option["attributes"]),
                 )
                 substitutions.append(substitution)
-                
+
         # Prioritize available ingredients
         if request.available_ingredients:
             available = [ing.lower() for ing in request.available_ingredients]
             substitutions = sorted(
-                substitutions,
-                key=lambda x: 0 if x.name.lower() in available else 1
+                substitutions, key=lambda x: 0 if x.name.lower() in available else 1
             )
     else:
         logger.warning(f"No substitution data found for ingredient: {original}")
-    
+
     return substitutions

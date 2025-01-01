@@ -2,6 +2,7 @@ import redis
 import os
 from functools import lru_cache
 
+
 @lru_cache()
 def get_cache():
     redis_host = os.getenv("REDIS_HOST", "localhost")
