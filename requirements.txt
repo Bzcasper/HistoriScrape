@@ -1,4 +1,5 @@
-fastapi
-uvicorn
 pydantic
 redis
+fastapi
+uvicorn
+requests
