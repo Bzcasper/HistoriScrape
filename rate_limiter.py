@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Request
 from fastapi import Depends
-from utils.cache import get_cache
+from cache import get_cache
 import time
 
 RATE_LIMIT = 100  # requests
