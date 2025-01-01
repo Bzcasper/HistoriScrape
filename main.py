@@ -11,12 +11,18 @@ import logging
 # main.py modification
 from fastapi import FastAPI, HTTPException, Request, Depends
 from mangum import Mangum
-
+# main.py
+from rate_limiter import rate_limiter
 app = FastAPI(
     title="SubstituteChef API",
     description="API for intelligent ingredient substitutions",
     version="1.0.0"
 )
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    await rate_limiter.check_rate_limit(request)
+    return await call_next(request)
+
 
 # Add Mangum handler for serverless
 handler = Mangum(app)
